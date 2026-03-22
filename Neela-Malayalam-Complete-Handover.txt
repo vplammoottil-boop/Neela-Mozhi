@@ -1,0 +1,264 @@
+
+================================================================================
+         NEELA MALAYALAM APP — COMPLETE PROJECT HANDOVER DOCUMENT
+         For: Semen Makarenko (Developer) & Sreejith Eravil (Co-pilot)
+         Date: March 21, 2026
+         Live App: https://neela-mozhi.vercel.app
+================================================================================
+
+
+SECTION 1 — WHAT IS THIS APP?
+─────────────────────────────────────────────────────────────────────────────
+Neela Malayalam is a mobile-first language learning app for Malayalam.
+Named after Neela, a blue macaw mascot designed by Nano Banana.
+
+Target audience: Malayalam diaspora, heritage learners, spouses of Malayalees,
+visitors to Kerala.
+
+Tech Stack:
+  • React 18 + TypeScript (Vite build system)
+  • React Router v6
+  • Supabase (database + auth + audio storage)
+  • ElevenLabs API (AI-generated Malayalam text-to-speech)
+  • OpenAI / AI Tutor backend
+  • Vercel (hosting — auto-deploys on GitHub push)
+
+
+SECTION 2 — LIVE LINKS & ACCESS
+─────────────────────────────────────────────────────────────────────────────
+  Live App URL:      https://neela-mozhi.vercel.app
+  Hosting:           Vercel (dashboard at vercel.com)
+  Database:          Supabase (dashboard at supabase.com)
+  ElevenLabs:        elevenlabs.io (for Malayalam voice)
+
+
+SECTION 3 — ENVIRONMENT VARIABLES (Secret Keys)
+─────────────────────────────────────────────────────────────────────────────
+These must be set in Vercel dashboard → Project Settings → Environment Variables.
+Also create a .env.local file locally (NEVER commit this to GitHub).
+
+  Variable Name                   Where to get it
+  ─────────────────────────────   ─────────────────────────────────────────
+  VITE_SUPABASE_URL               Supabase → Project Settings → API
+  VITE_SUPABASE_ANON_KEY          Supabase → Project Settings → API
+  VITE_ELEVENLABS_API_KEY         elevenlabs.io → Profile → API Keys
+  VITE_ELEVENLABS_VOICE_ID        ElevenLabs → the Malayalam voice ID
+  VITE_AI_TUTOR_ENDPOINT          Your AI backend URL
+  VITE_ENABLE_ELEVENLABS          Set to "true"
+  VITE_ENABLE_VOICE_INPUT         Set to "true"
+  VITE_ENABLE_AI_TUTOR            Set to "true"
+
+IMPORTANT SECURITY RULE:
+  • All keys must start with VITE_ to work in this app
+  • NEVER hardcode keys in any .ts or .tsx file
+  • The .gitignore file already protects .env.local from GitHub
+
+
+SECTION 4 — COMPLETE FILE STRUCTURE
+─────────────────────────────────────────────────────────────────────────────
+neela-mozhi/
+│
+├── public/
+│   ├── neela-logo.jpg              ← App logo 1024x1024 (Nano Banana)
+│   ├── neela-mozhi.jpg             ← Brand image
+│   ├── neela-celebration.mp4       ← Neela Macaw fanfare video (milestone reward)
+│   └── audio/
+│       ├── vowels/                 ← Drop vowel MP3s here (13 files)
+│       ├── consonants/             ← Drop consonant MP3s here (36 files)
+│       ├── chillu/                 ← Drop chillu MP3s here (5 files)
+│       └── phrases/
+│           ├── tea_shop/           ← Scenario 1 phrase recordings
+│           ├── directions/         ← Scenario 2
+│           ├── smalltalk/          ← Scenario 3
+│           ├── meeting/            ← Scenario 4
+│           ├── restaurant/         ← Scenario 5
+│           ├── shopping/           ← Scenario 6
+│           ├── emergency/          ← Scenario 7
+│           └── temple/             ← Scenario 8
+│
+├── src/
+│   ├── main.tsx                    ← React app entry point
+│   ├── App.tsx                     ← All routes + CelebrationModal mount point
+│   ├── index.css                   ← Global styles + glow animation
+│   │
+│   ├── pages/
+│   │   ├── OnboardingPage.tsx      ← Landing screen — ADD neela-logo.jpg HERE
+│   │   ├── ScenarioSelectionPage.tsx  ← Home dashboard
+│   │   ├── VowelFlashcardsPage.tsx    ← ADD glowingLetters glow to tiles
+│   │   ├── ConsonantFlashcardsPage.tsx ← ADD glowingLetters glow to tiles
+│   │   ├── VowelSignsPage.tsx
+│   │   ├── SoundMapPage.tsx        ← Full Malayalam sound grid (glow ready)
+│   │   ├── GrammarPage.tsx
+│   │   ├── PhraseTrainerPage.tsx
+│   │   ├── GuidedDialoguePage.tsx
+│   │   ├── AIChatPage.tsx          ← AI Tutor chat — ADD touchHighlight() call
+│   │   ├── ProgressPage.tsx
+│   │   └── CurriculumPage.tsx      ← Full lesson plan (4 tabs)
+│   │
+│   ├── components/
+│   │   ├── BottomNav.tsx           ← 5-tab bottom navigation
+│   │   └── CelebrationModal.tsx    ← Neela video fanfare overlay ★
+│   │
+│   ├── content/
+│   │   └── CurriculumData.ts       ← Complete lesson plan v3 data ★
+│   │
+│   ├── context/
+│   │   └── AppContext.tsx          ← Global glow + celebration state ★
+│   │
+│   ├── services/
+│   │   ├── audioService.ts         ← 3-tier audio engine ★
+│   │   ├── aiService.ts            ← AI Tutor API calls
+│   │   ├── elevenLabsService.ts    ← Malayalam TTS
+│   │   └── speechService.ts        ← Voice input recording
+│   │
+│   ├── hooks/
+│   │   ├── useTouchHighlight.ts    ← AI response → glow trigger ★
+│   │   └── useCelebration.ts       ← celebrate() one-liner ★
+│   │
+│   ├── config/
+│   │   └── constants.ts            ← All env vars + feature flags
+│   │
+│   └── types/
+│       └── index.ts                ← TypeScript interfaces
+│
+├── .env.example                    ← Template — copy to .env.local, fill keys
+├── .gitignore                      ← Protects .env files from GitHub
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+└── index.html
+
+
+SECTION 5 — DEVELOPER SETUP (Semen — do this first)
+─────────────────────────────────────────────────────────────────────────────
+Step 1:  git clone [repo-url]
+Step 2:  cd neela-mozhi
+Step 3:  npm install
+Step 4:  cp .env.example .env.local
+Step 5:  Open .env.local and fill in the real API keys
+Step 6:  npm run dev
+Step 7:  Open http://localhost:5173 in browser
+
+
+SECTION 6 — THE GLOW SYSTEM (Touch System)
+─────────────────────────────────────────────────────────────────────────────
+When the AI Tutor mentions specific Malayalam sounds, those letters GLOW
+automatically in all grids simultaneously for 12 seconds.
+
+How it works:
+  AI response → target_sounds: ["മ","ഴ"]
+      ↓
+  AIChatPage calls: touchHighlight(response)
+      ↓
+  AppContext: glowingLetters = Set{"മ","ഴ"}  (12 seconds)
+      ↓
+  Every grid page checks: glowingLetters.has(letter)
+      ↓
+  Matching tiles pulse with purple glow animation
+
+Code to add glow to any grid tile:
+  const { glowingLetters } = useAppContext();
+  <div className={`tile ${glowingLetters.has(letter) ? "highlighted" : ""}`}>
+
+Code to trigger glow from AI chat:
+  const { touchHighlight } = useTouchHighlight();
+  await touchHighlight(aiResponse);  // one line does everything
+
+
+SECTION 7 — CELEBRATION VIDEO (Neela Macaw Fanfare)
+─────────────────────────────────────────────────────────────────────────────
+File: public/neela-celebration.mp4
+
+Triggers on:
+  celebrate("perfect")      ← All quiz answers correct   → shows 💎 Flawless!
+  celebrate("lesson")       ← Lesson section complete     → shows ⭐ Lesson Complete!
+  celebrate("quiz")         ← Good quiz score             → shows 🏆 Perfect Score!
+  celebrate("streak", 7)    ← 7-day streak milestone      → shows 🔥 Streak Milestone!
+
+Usage from any page:
+  import { useCelebration } from "../hooks/useCelebration";
+  const { celebrate } = useCelebration();
+  celebrate("lesson");   // ← one line, Neela appears!
+
+Mount once in App.tsx:
+  import CelebrationModal from "./components/CelebrationModal";
+  const { celebrationVisible, celebrationReason,
+          celebrationStreak, closeCelebration } = useAppContext();
+  <CelebrationModal
+    visible={celebrationVisible}
+    reason={celebrationReason}
+    streakCount={celebrationStreak}
+    onClose={closeCelebration}
+  />
+
+
+SECTION 8 — AUDIO RECORDING INSTRUCTIONS (For the Artist)
+─────────────────────────────────────────────────────────────────────────────
+PHASE 1 — Individual Letters (needed for Vowels/Consonants grids)
+  Folder: public/assets/audio/phonemes/
+  Format: MP3, clear pronunciation, no background noise
+
+  Vowels (13 files):
+    a_letter.mp3    → അ    aa_letter.mp3   → ആ    i_letter.mp3    → ഇ
+    ee_letter.mp3   → ഈ    u_letter.mp3    → ഉ    oo_letter.mp3   → ഊ
+    ru_letter.mp3   → ഋ    e_letter.mp3    → എ    ae_letter.mp3   → ഏ
+    ai_letter.mp3   → ഐ    o_letter.mp3    → ഒ    oa_letter.mp3   → ഓ
+    au_letter.mp3   → ഔ
+
+  Priority Consonants (record these first — unique sounds):
+    zha.mp3         → ഴ    (unique to Malayalam!)
+    la_hard.mp3     → ള    (retroflex L)
+    ra_hard.mp3     → റ    (hard R)
+    na_retro.mp3    → ണ    (retroflex N)
+
+  All Consonants (36 files):
+    ka kha ga gha nga  cha chha ja jha nya
+    ta_retro tha_retro da_retro dha_retro na_retro
+    tha thha da dha na  pa pha ba bha ma
+    ya ra la va sha_soft sha_hard sa ha la_hard zha ra_hard
+
+  Chillaksharam (5 files):
+    n_chillu.mp3  l_chillu.mp3  ll_chillu.mp3  r_chillu.mp3  nn_chillu.mp3
+
+PHASE 2 — Scenario Phrases (8 scenarios, ~6 lines each)
+  Folder: public/audio/phrases/[scenario_name]/line_0.mp3, line_1.mp3 ...
+  Scenarios: tea_shop  directions  smalltalk  meeting
+             restaurant  shopping  emergency  temple
+
+
+SECTION 9 — PENDING TASKS (Priority Order)
+─────────────────────────────────────────────────────────────────────────────
+🔴 CRITICAL — Before any GitHub push:
+  [ ] Create .env.local from .env.example with real keys
+  [ ] Verify .gitignore is committed before any code push
+  [ ] Confirm all 4 env vars are set in Vercel dashboard
+
+🟡 BEFORE USER TESTING (Semen's tasks):
+  [ ] Mount CelebrationModal in App.tsx (see Section 7)
+  [ ] Add neela-logo.jpg to OnboardingPage.tsx (see Section 4)
+  [ ] Add glowingLetters glow to VowelFlashcardsPage tiles
+  [ ] Add glowingLetters glow to ConsonantFlashcardsPage tiles
+  [ ] Add touchHighlight() call in AIChatPage after AI response
+  [ ] Verify eleven_multilingual_v2 model in elevenLabsService.ts
+
+🟢 FUTURE FEATURES:
+  [ ] Roleplay Mode (AI plays one character, user records response)
+  [ ] Choice-Based Conversation Simulator
+  [ ] Advanced scenarios (bank, hospital, school)
+  [ ] iOS/Android native wrapper via Capacitor
+
+
+SECTION 10 — KEY CONTACTS
+─────────────────────────────────────────────────────────────────────────────
+  Role              Name
+  ──────────────    ─────────────────────────────────────────────
+  Project Owner     (Malayalam content, product decisions)
+  Developer         Semen Makarenko
+  Co-pilot          Sreejith Eravil
+  Designer          Nano Banana (logo + celebration video)
+  AI Assistant      Perplexity AI (architecture + code generation)
+
+
+================================================================================
+   Document prepared March 21, 2026 | Neela Malayalam v3 | neela-mozhi.vercel.app
+================================================================================
